@@ -9,30 +9,18 @@ const initialCountersState: CounterInterface[] = [
   {
     id: 1,
     title: "Counter 1",
-    updateCounterProcess: () => {},
-    updateCounterProcessedClients: () => {},
-    incrementQueue: () => {},
   },
   {
     id: 2,
     title: "Counter 2",
-    updateCounterProcess: () => {},
-    updateCounterProcessedClients: () => {},
-    incrementQueue: () => {},
   },
   {
     id: 3,
     title: "Counter 3",
-    updateCounterProcess: () => {},
-    updateCounterProcessedClients: () => {},
-    incrementQueue: () => {},
   },
   {
     id: 4,
     title: "Counter 4",
-    updateCounterProcess: () => {},
-    updateCounterProcessedClients: () => {},
-    incrementQueue: () => {},
   },
 ];
 
@@ -45,7 +33,7 @@ const BankCounterPage = () => {
   ]);
 
   // Represents the current state of each counter
-  const [countersProcessing, setCountersProcesssing] = useState([
+  const [areCountersProcessing, setAreCountersProcesssing] = useState([
     false,
     false,
     false,
@@ -53,16 +41,20 @@ const BankCounterPage = () => {
   ]);
 
   // Represents the amount of clients processed by each counter
-  const [clientsCountersProcessed, setClientsCountersProcessed] = useState([
-    0, 0, 0, 0,
-  ]);
+  const [
+    numberOfClientsCountersProcessed,
+    setNumberOfClientsCountersProcessed,
+  ] = useState([0, 0, 0, 0]);
 
   // Represents the total number of people waiting
   const [queue, setQueue] = useState<number>(5);
 
   // function handler for updating the status of each counter
-  const updateCounterProcess = (counterNumber: number, processing: boolean) => {
-    setCountersProcesssing((countsersProcessing) => {
+  const updateProcessingCounters = (
+    counterNumber: number,
+    processing: boolean
+  ) => {
+    setAreCountersProcesssing((countsersProcessing) => {
       const currentCountersStatus = [...countsersProcessing];
       currentCountersStatus[counterNumber] = processing;
       return currentCountersStatus;
@@ -70,11 +62,13 @@ const BankCounterPage = () => {
   };
 
   // function handler for updating the number of clients processed by each counter
-  const updateCounterProcessedClients = (counterNumber: number) => {
-    setClientsCountersProcessed((clientsCountersProcessed) => {
-      const currentCountersClientProcessed = [...clientsCountersProcessed];
+  const updateNumberOfClientsCounterHasProcessed = (counterNumber: number) => {
+    setNumberOfClientsCountersProcessed((numberOfClientsCountersProcessed) => {
+      const currentCountersClientProcessed = [
+        ...numberOfClientsCountersProcessed,
+      ];
       currentCountersClientProcessed[counterNumber] =
-        clientsCountersProcessed[counterNumber] + 1;
+        numberOfClientsCountersProcessed[counterNumber] + 1;
       return currentCountersClientProcessed;
     });
   };
@@ -95,12 +89,12 @@ const BankCounterPage = () => {
   // Function used to add clients to counter if there are available ones.
   // Will check first if there is an available
   const processClients = () => {
-    const counterIndexAvailable = countersProcessing.findIndex(
+    const counterIndexAvailable = areCountersProcessing.findIndex(
       (counterProcessing) => !counterProcessing
     );
     if (counterIndexAvailable > -1) {
       subtractQueue();
-      updateCounterProcess(counterIndexAvailable, true);
+      updateProcessingCounters(counterIndexAvailable, true);
     }
   };
 
@@ -116,19 +110,10 @@ const BankCounterPage = () => {
       }
     });
     return () => clearTimeout(timeout);
-  }, [queue, countersProcessing, start]);
-
-  // style={{
-  //   display: "flex",
-  //   width: "100%",
-  //   maxWidth: "1024px",
-  //   margin: "auto",
-  //   justifyContent: "space-between",
-  //   alignItems: "center",
-  // }}
+  }, [queue, areCountersProcessing, start]);
 
   return (
-    <>
+    <div className="m-5">
       <div
         className="flex justify-between items-center w-full max-w-screen-lg m-auto"
         data-testid="container"
@@ -138,33 +123,40 @@ const BankCounterPage = () => {
             key={counter.id}
             {...counter}
             id={index}
-            processing={countersProcessing[index]}
-            processingTimes={processingTimes[index]}
-            clientsCounterProcessed={clientsCountersProcessed[index]}
-            updateCounterProcess={updateCounterProcess}
-            updateCounterProcessedClients={updateCounterProcessedClients}
-            incrementQueue={incrementQueue}
+            processing={areCountersProcessing[index]}
+            processingTime={processingTimes[index]}
+            numberOfClientsProcessed={numberOfClientsCountersProcessed[index]}
+            updateProcessingCounters={updateProcessingCounters}
+            updateNumberOfClientsCounterHasProcessed={
+              updateNumberOfClientsCounterHasProcessed
+            }
           ></Counter>
         ))}
       </div>
-      <div>
+      <div className="flex flex-col w-full justify-evenly items-left max-w-screen-lg m-auto my-5">
         Number of people waiting:{" "}
         <span data-testid="queue" className="font-bold">
           {queue}
         </span>
         <div>
-          <button data-testid="next-button" onClick={() => incrementQueue()}>
+          <button
+            data-testid="next-button"
+            onClick={() => incrementQueue()}
+            className="self-end p-2 mt-2 border-solid rounded-md border-2 border-slate-200"
+          >
             Next 1
           </button>
         </div>
       </div>
       <hr></hr>
-      <InitializeValuesForm
-        processingTimes={processingTimes}
-        queue={queue}
-        updateInitialState={updateInitialState}
-      ></InitializeValuesForm>
-    </>
+      <div className="my-5">
+        <InitializeValuesForm
+          processingTimes={processingTimes}
+          queue={queue}
+          updateInitialState={updateInitialState}
+        ></InitializeValuesForm>
+      </div>
+    </div>
   );
 };
 

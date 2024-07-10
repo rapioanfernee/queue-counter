@@ -2,8 +2,19 @@
 import React, { useEffect, useState } from "react";
 import { CounterInterface } from "../lib/definitions";
 
-const Counter = (props: CounterInterface) => {
-  const processTime = props.processingTimes || 2;
+interface CounterProps {
+  processingTime: number;
+  processing: boolean;
+  numberOfClientsProcessed: number;
+  updateProcessingCounters: (
+    counterIndex: number,
+    isCounterProcessing: boolean
+  ) => void;
+  updateNumberOfClientsCounterHasProcessed: (counterIndex: number) => void;
+}
+
+const Counter = (props: CounterInterface & CounterProps) => {
+  const processTime = props.processingTime || 2;
   const processing = props.processing;
   const title = props.title;
 
@@ -12,8 +23,8 @@ const Counter = (props: CounterInterface) => {
 
     if (processing) {
       timeout = setTimeout(() => {
-        props.updateCounterProcess(props.id, false);
-        props.updateCounterProcessedClients(props.id);
+        props.updateProcessingCounters(props.id, false);
+        props.updateNumberOfClientsCounterHasProcessed(props.id);
       }, processTime * 1000);
     }
     return () => clearTimeout(timeout);
@@ -31,7 +42,7 @@ const Counter = (props: CounterInterface) => {
       <div>
         Proccessed:{" "}
         <span data-testid={`processed-counter-${props.id}`}>
-          {props.clientsCounterProcessed}
+          {props.numberOfClientsProcessed}
         </span>
       </div>
     </div>

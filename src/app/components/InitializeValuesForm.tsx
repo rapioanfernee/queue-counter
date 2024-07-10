@@ -26,10 +26,10 @@ const InitializeValuesForm = (props: {
       onSubmit={handleSubmit}
       className="flex flex-col justify-between items-center w-full max-w-screen-md m-auto"
     >
-      <div>Initialize values</div>
+      <div className="mb-5 font-medium text-xl">Initialize values</div>
       {processingTimes.map((processingTime, index) => (
         <div
-          className="flex w-full justify-evenly items-left"
+          className="flex w-full justify-evenly items-left my-1.5"
           key={`${index}-${processingTime}`}
         >
           <span className="content-center flex-1">

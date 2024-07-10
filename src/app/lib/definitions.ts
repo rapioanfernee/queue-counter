@@ -3,10 +3,4 @@
 export interface CounterInterface {
   id: number;
   title: string;
-  processing?: boolean;
-  clientsCounterProcessed?: number;
-  processingTimes?: number;
-  updateCounterProcess: (counterNumber: number, processing: boolean) => void;
-  updateCounterProcessedClients: (counterNumber: number) => void;
-  incrementQueue: () => void;
 }
