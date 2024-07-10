@@ -20,7 +20,10 @@ const Counter = (props: CounterInterface) => {
   }, [processing]);
 
   return (
-    <div data-testid={`counter-${props.id}`}>
+    <div
+      data-testid={`counter-${props.id}`}
+      className="border-solid border-2 border-slate-200 rounded-md p-2"
+    >
       <div>{title}</div>
       <div data-testid={`processing-counter-${props.id}`}>
         {props.processing ? "processing" : "idle"}

@@ -118,17 +118,19 @@ const BankCounterPage = () => {
     return () => clearTimeout(timeout);
   }, [queue, countersProcessing, start]);
 
+  // style={{
+  //   display: "flex",
+  //   width: "100%",
+  //   maxWidth: "1024px",
+  //   margin: "auto",
+  //   justifyContent: "space-between",
+  //   alignItems: "center",
+  // }}
+
   return (
     <>
       <div
-        style={{
-          display: "flex",
-          width: "100%",
-          maxWidth: "1024px",
-          margin: "auto",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
+        className="flex justify-between items-center w-full max-w-screen-lg m-auto"
         data-testid="container"
       >
         {initialCountersState.map((counter, index) => (
@@ -146,7 +148,10 @@ const BankCounterPage = () => {
         ))}
       </div>
       <div>
-        Number of people waiting: <span data-testid="queue">{queue}</span>
+        Number of people waiting:{" "}
+        <span data-testid="queue" className="font-bold">
+          {queue}
+        </span>
         <div>
           <button data-testid="next-button" onClick={() => incrementQueue()}>
             Next 1
