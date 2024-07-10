@@ -20,10 +20,17 @@ const Counter = (props: CounterInterface) => {
   }, [processing]);
 
   return (
-    <div>
+    <div data-testid={`counter-${props.id}`}>
       <div>{title}</div>
-      <div>{props.processing ? "processing" : "idle"}</div>
-      <div>Proccessed: {props.clientsCounterProcessed}</div>
+      <div data-testid={`processing-counter-${props.id}`}>
+        {props.processing ? "processing" : "idle"}
+      </div>
+      <div>
+        Proccessed:{" "}
+        <span data-testid={`processed-counter-${props.id}`}>
+          {props.clientsCounterProcessed}
+        </span>
+      </div>
     </div>
   );
 };

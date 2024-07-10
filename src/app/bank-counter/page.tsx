@@ -129,6 +129,7 @@ const BankCounterPage = () => {
           justifyContent: "space-between",
           alignItems: "center",
         }}
+        data-testid="container"
       >
         {initialCountersState.map((counter, index) => (
           <Counter
@@ -145,9 +146,11 @@ const BankCounterPage = () => {
         ))}
       </div>
       <div>
-        Number of people waiting: {queue}
+        Number of people waiting: <span data-testid="queue">{queue}</span>
         <div>
-          <button onClick={() => incrementQueue()}>Next 1</button>
+          <button data-testid="next-button" onClick={() => incrementQueue()}>
+            Next 1
+          </button>
         </div>
       </div>
       <hr></hr>
