@@ -34,14 +34,23 @@ const Counter = (props: CounterInterface & CounterProps) => {
     <div
       data-testid={`counter-${props.id}`}
       className="border-solid border-2 border-slate-200 rounded-md p-2"
+      style={{ minWidth: "160px" }}
     >
-      <div>{title}</div>
-      <div data-testid={`processing-counter-${props.id}`}>
+      <div className="text-xl">{title}</div>
+      <div
+        data-testid={`processing-counter-${props.id}`}
+        className={`${
+          processing ? "text-red-600" : "text-neutral-950"
+        } font-bold text-2xl`}
+      >
         {props.processing ? "processing" : "idle"}
       </div>
       <div>
         Proccessed:{" "}
-        <span data-testid={`processed-counter-${props.id}`}>
+        <span
+          data-testid={`processed-counter-${props.id}`}
+          className="text-neutral-950 font-bold text-2xl"
+        >
           {props.numberOfClientsProcessed}
         </span>
       </div>

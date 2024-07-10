@@ -1,95 +1,163 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import React, { useEffect, useState } from "react";
 
-export default function Home() {
+import Counter from "./components/Counter";
+import { CounterInterface } from "./lib/definitions";
+import InitializeValuesForm from "./components/InitializeValuesForm";
+
+const initialCountersState: CounterInterface[] = [
+  {
+    id: 1,
+    title: "Counter 1",
+  },
+  {
+    id: 2,
+    title: "Counter 2",
+  },
+  {
+    id: 3,
+    title: "Counter 3",
+  },
+  {
+    id: 4,
+    title: "Counter 4",
+  },
+];
+
+const BankCounterPage = () => {
+  const [start, setStart] = useState(false);
+
+  // Represents the processing time of each counter
+  const [processingTimes, setprocessingTimes] = useState<number[]>([
+    2, 3, 4, 5,
+  ]);
+
+  // Represents the current state of each counter
+  const [areCountersProcessing, setAreCountersProcesssing] = useState([
+    false,
+    false,
+    false,
+    false,
+  ]);
+
+  // Represents the amount of clients processed by each counter
+  const [
+    numberOfClientsCountersProcessed,
+    setNumberOfClientsCountersProcessed,
+  ] = useState([0, 0, 0, 0]);
+
+  // Represents the total number of people waiting
+  const [queue, setQueue] = useState<number>(5);
+
+  // function handler for updating the status of each counter
+  const updateProcessingCounters = (
+    counterNumber: number,
+    processing: boolean
+  ) => {
+    setAreCountersProcesssing((countsersProcessing) => {
+      const currentCountersStatus = [...countsersProcessing];
+      currentCountersStatus[counterNumber] = processing;
+      return currentCountersStatus;
+    });
+  };
+
+  // function handler for updating the number of clients processed by each counter
+  const updateNumberOfClientsCounterHasProcessed = (counterNumber: number) => {
+    setNumberOfClientsCountersProcessed((numberOfClientsCountersProcessed) => {
+      const currentCountersClientProcessed = [
+        ...numberOfClientsCountersProcessed,
+      ];
+      currentCountersClientProcessed[counterNumber] =
+        numberOfClientsCountersProcessed[counterNumber] + 1;
+      return currentCountersClientProcessed;
+    });
+  };
+
+  const subtractQueue = () => {
+    setQueue((queue) => queue - 1);
+  };
+
+  const incrementQueue = () => {
+    if (!start) {
+      setStart(true);
+    } else {
+      setQueue((queue) => queue + 1);
+      processClients();
+    }
+  };
+
+  // Function used to add clients to counter if there are available ones.
+  // Will check first if there is an available
+  const processClients = () => {
+    const counterIndexAvailable = areCountersProcessing.findIndex(
+      (counterProcessing) => !counterProcessing
+    );
+    if (counterIndexAvailable > -1) {
+      subtractQueue();
+      updateProcessingCounters(counterIndexAvailable, true);
+    }
+  };
+
+  const updateInitialState = (processingTimes: number[], queue: number) => {
+    setprocessingTimes(processingTimes);
+    setQueue(queue);
+  };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (queue > 0 && start) {
+        processClients();
+      }
+    });
+    return () => clearTimeout(timeout);
+  }, [queue, areCountersProcessing, start]);
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
+    <div className="m-5">
+      <div
+        className="flex justify-between items-center w-full max-w-screen-lg m-auto"
+        data-testid="container"
+      >
+        {initialCountersState.map((counter, index) => (
+          <Counter
+            key={counter.id}
+            {...counter}
+            id={index}
+            processing={areCountersProcessing[index]}
+            processingTime={processingTimes[index]}
+            numberOfClientsProcessed={numberOfClientsCountersProcessed[index]}
+            updateProcessingCounters={updateProcessingCounters}
+            updateNumberOfClientsCounterHasProcessed={
+              updateNumberOfClientsCounterHasProcessed
+            }
+          ></Counter>
+        ))}
+      </div>
+      <div className="flex flex-col w-full justify-evenly items-left max-w-screen-lg m-auto my-5">
+        Number of people waiting:{" "}
+        <span data-testid="queue" className="font-bold">
+          {queue}
+        </span>
         <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            data-testid="next-button"
+            onClick={() => incrementQueue()}
+            className="self-end p-2 mt-2 border-solid rounded-md border-2 border-slate-200"
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+            Next 1
+          </button>
         </div>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      <hr></hr>
+      <div className="my-5">
+        <InitializeValuesForm
+          processingTimes={processingTimes}
+          queue={queue}
+          updateInitialState={updateInitialState}
+        ></InitializeValuesForm>
       </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   );
-}
+};
+
+export default BankCounterPage;

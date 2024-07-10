@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
-import BankCounter from "../src/app/bank-counter/page";
+import BankCounter from "../src/app/page";
 import { act } from "react";
 
 describe("Home", () => {
